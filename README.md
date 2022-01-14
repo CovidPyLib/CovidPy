@@ -9,6 +9,6 @@ Using this library you can:
 
 Please remember that this library is in it's early stages and there could be some bugs or missing features, if you found some please fill an issu#e
 
-#Licensed under GPL v3.0 or later
+# Licensed under GPL v3.0 or later
 
 ![GPLV3.0LATERLOGO](https://www.gnu.org/graphics/gplv3-or-later.png "Licensed under GPL v3.0 or later")
