@@ -7,7 +7,7 @@ Using this library you can:
 2) Encode a VALID json and create a recognizable DCC (it will only work with a json containint a valid DCC's info)
 3) Verify a DCC it will verify the validity of a DCC also checking if it's not revoked
 
-Please remember that this library is in it's early stages and there could be some bugs or missing features, if you found some please fill an issu#e
+Please remember that this library is in it's early stages and there could be some bugs or missing features, if you found some please fill an issue
 
 # Licensed under GPL v3.0 or later
 
