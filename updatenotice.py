@@ -9,7 +9,7 @@
 
 import os
 
-version = "0.0.1"
+version = "0.0.2"
 
 notice  = f"""
 # This file is part of CovidPy v{version}.
@@ -22,8 +22,12 @@ notice  = f"""
 # You should have received a copy of the GNU General Public License along with the project.
 """
 
-for root, dirs, file in os.walk('covidpy'):
-    f = open(file, 'w')
-    cont = f.read() 
-    newcont = f'{notice}\n{cont}'
-    f.write()
+for root, dirs, files in os.walk('covidpy'):
+    for file in files:
+        try:
+            f = open(f'covidpy\\{file}', 'r+')
+            cont = f.read() 
+            newcont = f'{notice}\n{cont}'
+            f.write(newcont)
+        except:
+            pass
