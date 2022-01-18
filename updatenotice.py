@@ -1,4 +1,4 @@
-# This file is part of CovidPy v0.0.5.
+# This file is part of CovidPy v0.0.6.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -9,7 +9,7 @@
 
 import os
 
-version = "0.0.5"
+version = "0.0.6"
 
 notice  = f"""
 # This file is part of CovidPy v{version}.

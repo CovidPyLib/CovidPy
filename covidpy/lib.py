@@ -133,4 +133,4 @@ class CovidPy:
         elif bl and self.__disableblacklist:
             return VerifyResult(self.__verifier.is_valid(self.__decodecertificate(cert)), None)
         elif bl and not self.__disableblacklist:
-            return VerifyResult(False, False)
+            return VerifyResult(False, True)
