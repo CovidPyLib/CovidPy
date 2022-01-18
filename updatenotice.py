@@ -1,4 +1,4 @@
-# This file is part of CovidPy v0.0.1.
+# This file is part of CovidPy v0.0.4.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -9,7 +9,7 @@
 
 import os
 
-version = "0.0.2"
+version = "0.0.4"
 
 notice  = f"""
 # This file is part of CovidPy v{version}.
@@ -26,8 +26,17 @@ for root, dirs, files in os.walk('covidpy'):
     for file in files:
         try:
             f = open(f'covidpy\\{file}', 'r+')
-            cont = f.read() 
-            newcont = f'{notice}\n{cont}'
-            f.write(newcont)
+            cont = f.read()
+            if cont.lstrip().startswith('# This file is part of CovidPy v'):
+                cont = notice + cont[len(notice):]
+                f.seek(0)
+                f.write(cont)
+                f.truncate()
+                f.close()
+            else:
+                f.seek(0)
+                f.write(notice)
+                f.truncate()
+                f.close() 
         except:
             pass

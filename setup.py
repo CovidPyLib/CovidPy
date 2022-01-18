@@ -1,4 +1,4 @@
-# This file is part of CovidPy v0.0.2.
+# This file is part of CovidPy v0.0.4.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -9,13 +9,19 @@
 
 from setuptools import setup, find_packages
 
-version = '0.0.2'
+version = '0.0.4'
 
 with open("README.md", encoding="utf-8") as f:
     readme = f.read().replace('🦠', '')
 
-with open("requirements.txt", encoding="utf-8") as r:
-    requirements = [i.strip() for i in r]
+requirements = [
+'schedule',
+'requests',
+'qrcode',
+'pyzbar',
+'cryptography',
+'cose',
+'cbor2']
 
 setup(
     name="CovidPyLib",

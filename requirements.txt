@@ -5,4 +5,3 @@ pyzbar
 cryptography
 cose
 cbor2
-zlib
