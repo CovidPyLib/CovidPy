@@ -1,5 +1,5 @@
 
-# This file is part of CovidPy v0.0.4.
+# This file is part of CovidPy v0.0.5.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of

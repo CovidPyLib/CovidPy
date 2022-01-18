@@ -1,5 +1,5 @@
 
-# This file is part of CovidPy v0.0.4.
+# This file is part of CovidPy v0.0.5.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -7,7 +7,6 @@
 #
 # You can use it and/or modify it under the terms of the GNU General Public License v3.0 or later.
 # You should have received a copy of the GNU General Public License along with the project.
-import requests
 import os
 import qrcode
 import zlib
@@ -30,7 +29,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 import PIL
 
 from .verifier import DCCVerifier
-from .types import QRCode
+from .types import QRCode, VerifyResult
 from .errors import InvalidDCC
 
 class CovidPy:
@@ -127,8 +126,11 @@ class CovidPy:
         gqr = self.__genqr(data)
         qr = QRCode(gqr[0], gqr[1],self.__is_blacklisted(data), self)
         return qr
-    def verify(self, cert):
-        if not self.disableblacklist and not self.__is_blacklisted(self.decode(cert)):
-            return self.__verifier.is_valid(self.__decodecertificate(cert))
-        else:
-            return False
+    def verify(self, cert) -> VerifyResult:
+        bl = self.__is_blacklisted(self.decode(cert))
+        if not self.__disableblacklist and not bl:
+            return VerifyResult(self.__verifier.is_valid(self.__decodecertificate(cert)), False)
+        elif bl and self.__disableblacklist:
+            return VerifyResult(self.__verifier.is_valid(self.__decodecertificate(cert)), None)
+        elif bl and not self.__disableblacklist:
+            return VerifyResult(False, False)

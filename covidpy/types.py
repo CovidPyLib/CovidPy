@@ -1,5 +1,5 @@
 
-# This file is part of CovidPy v0.0.4.
+# This file is part of CovidPy v0.0.5.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,3 +27,8 @@ class QRCode:
         self.__cpyinstance.decode(self)
     def verify(self):
         self.__cpyinstance.verify(self)
+
+class VerifyResult:
+    def __init__(self, is_valid:bool, is_revoked:bool):
+        self.valid = is_valid
+        self.revoked = is_revoked
