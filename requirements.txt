@@ -2,7 +2,7 @@ schedule
 requests
 qrcode
 pyzbar
-cryptography
+cryptography>=3.1
 cose
 cbor2
 base45
