@@ -21,7 +21,8 @@ requirements = [
 'pyzbar',
 'cryptography',
 'cose',
-'cbor2']
+'cbor2',
+'base45']
 
 setup(
     name="CovidPyLib",
