@@ -5,3 +5,4 @@ pyzbar
 cryptography
 cose
 cbor2
+base45
