@@ -46,7 +46,10 @@ class CovidPy:
     def __decodecertificate(self, cert):
         img = PIL.Image.open(cert) if isinstance(cert, str) else cert.to_bytesio
         data = pyzbar.pyzbar.decode(img)
-        cert = data[0].data.decode()
+        try:
+            cert = data[0].data.decode()
+        except IndexError:
+            raise InvalidDCC('The given code is not a DCC, check the \'details\' attribute for more details', 'QR_NOT_FOUND')
         if cert.startswith('HC1:'):
             b45data = cert.replace("HC1:", "")
             compresseddata = b45decode(b45data)
@@ -73,7 +76,7 @@ class CovidPy:
     
     def __is_blacklisted(self, raw:dict):
         ci = self.__getUVCI(raw)
-        return ci in self.verifier.blacklist
+        return ci in self.__verifier.blacklist
 
             
     def decode(self, cert): 
