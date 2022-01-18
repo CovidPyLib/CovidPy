@@ -23,7 +23,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/CovidPyLib",
     author="Doggy",
-    license="LGPLv3+",
+    license="GPLv3+",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
