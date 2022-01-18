@@ -8,7 +8,7 @@ Using this library you can:
 3) Verify a DCC it will verify the validity of a DCC also checking if it's not revoked
 
 Please remember that this library is in it's early stages and it's not complete, there could be some bugs or missing features, if you find any, please report in an issue
-if you have any question you can open an issue or ask me on [telegram](t.me/cagavo)
+if you have any question you can open an issue or ask me on [telegram](https://t.me/cagavo)
 if you know how to improve this library, please send me a pull request, you can find a list of things to do [here](#TODO)
 
 ## Credits

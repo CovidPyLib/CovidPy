@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 version = '0.0.1'
 
-readme = open('README.md').read()
+readme = open('README.md').read().replace('🦠', '')
 
 requirements = open('requirements.txt').read().splitlines()
 
