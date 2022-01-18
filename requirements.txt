@@ -1,0 +1,8 @@
+schedule
+requests
+qrcode
+pyzbar
+cryptography
+cose
+cbor2
+zlib
