@@ -16,7 +16,7 @@ readme = open('README.md').read()
 requirements = open('requirements.txt').read().splitlines()
 
 setup(
-    name="CovidPy",
+    name="CovidPyLib",
     version=version,
     description="Simple Python library to work with DCCs (Digital Covid Certificates)",
     long_description=readme,
