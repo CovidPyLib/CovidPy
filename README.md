@@ -25,10 +25,12 @@ if you know how to improve this library, please send me a pull request, you can 
 - Examples
 
 ## Licensed under GPL v3.0 or later
+=======
+#Licensed under GPL v3.0 or later
 
 ![GPLV3.0LATERLOGO](https://www.gnu.org/graphics/gplv3-or-later.png "Licensed under GPL v3.0 or later")
 
-### useful links
+### Useful links
 
 - https://forum.italia.it/t/verifica-green-pass-api/25190/85?page=5
 - https://github.com/ministero-salute/dcc-utils/issues/1
