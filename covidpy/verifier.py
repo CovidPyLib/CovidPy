@@ -1,5 +1,6 @@
+
 # Copyright (c) 2022, CovidPyLib
-# This file is part of CovidPy v0.0.8.
+# This file is part of CovidPy v0.0.9.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -7,7 +8,7 @@
 #
 # You can use it and/or modify it under the terms of the GNU General Public License v3.0 or later.
 # You should have received a copy of the GNU General Public License along with the project.
-import json
+mport json
 from base64 import b64encode, b64decode
 import requests
 import schedule
