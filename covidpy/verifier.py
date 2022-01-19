@@ -8,11 +8,10 @@
 #
 # You can use it and/or modify it under the terms of the GNU General Public License v3.0 or later.
 # You should have received a copy of the GNU General Public License along with the project.
-
+import json
 from base64 import b64encode, b64decode
-from cose.headers import KID
-import requests, json
-from cose.algorithms import Es256
+import requests
+import schedule
 from cose.keys.curves import P256
 from cose.algorithms import Es256, Ps256
 from cose.keys import CoseKey
@@ -20,11 +19,11 @@ from cose.keys.keyparam import KpAlg, EC2KpX, EC2KpY, EC2KpCurve, RSAKpE, RSAKpN
 from cose.keys.keyparam import KpKty
 from cose.keys.keytype import KtyEC2, KtyRSA
 from cose.messages import CoseMessage
+from cose.headers import KID
 from cryptography.utils import int_to_bytes
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives import serialization
-import schedule
 
 class DCCVerifier:
     def __init__(self, disblrefresh, diskidsrefresh):
@@ -57,7 +56,7 @@ class DCCVerifier:
 
         pub = serialization.load_der_public_key(asn1data)
         if (isinstance(pub, RSAPublicKey)):
-              self.kids[kid_b64] = CoseKey.from_dict(
+            self.kids[kid_b64] = CoseKey.from_dict(
                {
                     KpAlg: Ps256, 
                     KpKty: KtyRSA,
@@ -65,7 +64,7 @@ class DCCVerifier:
                     RSAKpN: int_to_bytes(pub.public_numbers().n)
                })
         elif (isinstance(pub, EllipticCurvePublicKey)):
-              self.kids[kid_b64] = CoseKey.from_dict(
+            self.kids[kid_b64] = CoseKey.from_dict(
                {
                     EC2KpCurve: P256, 
                     KpKty: KtyEC2, 

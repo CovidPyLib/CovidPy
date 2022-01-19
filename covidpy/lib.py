@@ -9,31 +9,33 @@
 # You can use it and/or modify it under the terms of the GNU General Public License v3.0 or later.
 # You should have received a copy of the GNU General Public License along with the project.
 
-import os
-import qrcode
-import zlib
-import cbor2
 import platform
+import zlib
+import qrcode
+import cbor2
+
 try:
     import pyzbar.pyzbar
 except ImportError:
     if platform.system() == 'Windows':
-        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nsince you are on windows zbar should be included with pyzbar.")
+        raise ImportError("""ERROR: pyzbar or zbar not found CovidPy won't work without it
+        since you are on windows zbar should be included with pyzbar.""")
     elif platform.system() == 'Linux':
-        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager ('sudo apt install libzbar0' on debian-based distros).")
+        raise ImportError("""ERROR: pyzbar or zbar not found CovidPy won't work without it
+        please install pyzbar using pip or zbar using your package manager.
+        example: 'sudo apt install libzbar0' on debian-based distros.""")
     elif platform.system() == 'Darwin':
-        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager ('brew install zbar' on Mac OS X).")
-    else:
-        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager.") 
+        raise ImportError("""ERROR: pyzbar or zbar not found CovidPy won't work without it
+        please install pyzbar using pip or zbar using your package manager.
+        example 'brew install zbar' on Mac OS X.""")
+    raise ImportError("""ERROR: pyzbar or zbar not found CovidPy won't work without it
+    please install pyzbar using pip or zbar using your package manager.""")
 from base45 import b45encode, b45decode
 from cose.algorithms import Es256
 from cose.keys.curves import P256
-from cose.algorithms import Es256
 from cose.keys.keyparam import KpKty, KpAlg, EC2KpD, EC2KpCurve
 from cose.headers import Algorithm, KID
 from cose.keys import CoseKey
-from cose.keys.keyparam import KpAlg, EC2KpD, EC2KpCurve
-from cose.keys.keyparam import KpKty
 from cose.keys.keytype import KtyEC2
 from cose.messages import Sign1Message
 from cryptography import x509
@@ -46,7 +48,10 @@ from .types import QRCode, VerifyResult
 from .errors import InvalidDCC
 
 class CovidPy:
-    def __init__(self, disable_keys_update:bool=False, disable_blalcklist_update:bool=False, disable_blacklist:bool=False) -> None:
+    def __init__(self,
+    disable_keys_update:bool=False,
+    disable_blalcklist_update:bool=False,
+    disable_blacklist:bool=False) -> None:
         self.__autoblacklist = disable_blalcklist_update
         self.__autokids = disable_keys_update
         self.__disableblacklist = disable_blacklist
@@ -62,19 +67,23 @@ class CovidPy:
         try:
             cert = data[0].data.decode()
         except IndexError:
-            raise InvalidDCC('The given code is not a DCC, check the \'details\' attribute for more details', 'QR_NOT_FOUND')
+            raise InvalidDCC(
+                'The given code is not a DCC, check the \'details\' attribute for more details',
+                'QR_NOT_FOUND')
         if cert.startswith('HC1:'):
             b45data = cert.replace("HC1:", "")
             compresseddata = b45decode(b45data)
             decompressed = zlib.decompress(compresseddata)
             return decompressed
         else:
-            raise InvalidDCC('The given code is not a DCC, check the \'details\' attribute for more details', 'HC1_MISSING')
+            raise InvalidDCC(
+                'The given code is not a DCC, check the \'details\' attribute for more details',
+                'HC1_MISSING')
     
-    def __getUVCI(self,dictionary):
+    def __get_uvci(self,dictionary):
         for key, value in dictionary.items():
             if isinstance(value, dict):
-                if (val := self.__getUVCI(value)) is not None:
+                if (val := self.__get_uvci(value)) is not None:
                     return val
             elif isinstance(value,list):
                 for v in value:
@@ -88,7 +97,7 @@ class CovidPy:
             return None
     
     def __is_blacklisted(self, raw:dict):
-        ci = self.__getUVCI(raw)
+        ci = self.__get_uvci(raw)
         return ci in self.__verifier.blacklist
 
             
@@ -96,16 +105,6 @@ class CovidPy:
         cbordata = self.__decodecertificate(cert)
         decoded = cbor2.loads(cbordata)
         return cbor2.loads(decoded.value[2]) 
-
-    def __finddatapaths(self): #TODO upload to pypi and remove this function
-        rootdir = os.getcwd()
-
-        for subdir, _, files in os.walk(rootdir):
-            for file in files:
-                filepath = subdir + os.sep + file
-
-                if filepath.endswith("lib.py"):
-                    return subdir + os.sep + 'certs'
 
     def __genqr(self, payload:dict):
         cbordata = cbor2.dumps(payload)
