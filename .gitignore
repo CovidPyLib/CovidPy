@@ -1,6 +1,6 @@
 # dev
 main.py
-
+tests/
 # PyCharm stuff
 .idea/
 

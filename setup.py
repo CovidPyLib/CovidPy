@@ -19,7 +19,7 @@ requirements = [
     "requests",
     "qrcode",
     "pyzbar",
-    "cryptography>=3.1",
+    "cryptography>=3.4.2",
     "cose",
     "cbor2",
     "base45",
@@ -55,6 +55,6 @@ setup(
         "Docs": "https://github.com/CovidPyLib/CovidPy",
     },
     python_requires="~=3.7",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     install_requires=requirements,
 )
