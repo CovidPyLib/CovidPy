@@ -77,7 +77,7 @@ class CovidPy:
         data = pyzbar.pyzbar.decode(img)
         try:
             cert = data[0].data.decode()
-        except IndexError  as index_error:
+        except IndexError as index_error:
             raise InvalidDCC(
                 "The given code is not a DCC, check the 'details' attribute for more details",
                 "QR_NOT_FOUND",
