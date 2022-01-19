@@ -11,7 +11,7 @@ import os
 
 version = "0.0.8"
 
-notice  = f"""
+notice = f"""
 # Copyright (c) 2022, CovidPyLib
 # This file is part of CovidPy v{version}.
 #
@@ -23,13 +23,13 @@ notice  = f"""
 # You should have received a copy of the GNU General Public License along with the project.
 """
 
-for root, dirs, files in os.walk('covidpy'):
+for root, dirs, files in os.walk("covidpy"):
     for file in files:
         try:
-            f = open(f'covidpy\\{file}', 'r+')
+            f = open(f"covidpy\\{file}", "r+")
             cont = f.read()
-            if cont.lstrip().startswith('# Copyright (c)'):
-                cont = notice + cont[len(notice):]
+            if cont.lstrip().startswith("# Copyright (c)"):
+                cont = notice + cont[len(notice) :]
                 f.seek(0)
                 f.write(cont)
                 f.truncate()
@@ -38,6 +38,6 @@ for root, dirs, files in os.walk('covidpy'):
                 f.seek(0)
                 f.write(notice)
                 f.truncate()
-                f.close() 
+                f.close()
         except:
             pass

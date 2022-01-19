@@ -9,20 +9,21 @@
 
 from setuptools import setup, find_packages
 
-version = '0.0.8'
+version = "0.0.8"
 
 with open("README.md", encoding="utf-8") as f:
-    readme = f.read().replace('🦠', '')
+    readme = f.read().replace("🦠", "")
 
 requirements = [
-'schedule',
-'requests',
-'qrcode',
-'pyzbar',
-'cryptography>=3.1',
-'cose',
-'cbor2',
-'base45']
+    "schedule",
+    "requests",
+    "qrcode",
+    "pyzbar",
+    "cryptography>=3.1",
+    "cose",
+    "cbor2",
+    "base45",
+]
 
 setup(
     name="CovidPyLib",
@@ -44,7 +45,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Topic :: Software Development :: Libraries"
+        "Topic :: Software Development :: Libraries",
     ],
     keywords="Covid19 Covid DCC DGC scanner green pass",
     project_urls={
