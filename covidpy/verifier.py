@@ -101,11 +101,8 @@ class DCCVerifier:
         b64_a_kid = b64encode(a_kid).decode("ASCII")
         if not b64_a_kid in self.kids:
             return False
-        else:
-            key = self.kids[b64_a_kid]
-
-            cose.key = key
-            if not cose.verify_signature():
-                return False
-            else:
-                return True
+        key = self.kids[b64_a_kid]
+        cose.key = key
+        if not cose.verify_signature():
+            return False
+        return True

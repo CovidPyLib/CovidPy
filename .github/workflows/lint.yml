@@ -32,5 +32,6 @@ jobs:
         with:
           black: true
           auto_fix: true
+          black_args: "--verbose"
           git_name: "Black linting"
           commit_message: "Automatic linting (${linter})"

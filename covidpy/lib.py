@@ -12,27 +12,32 @@ import platform
 import zlib
 import qrcode
 import cbor2
-import platform
 
 try:
     import pyzbar.pyzbar
-except ImportError:
+except ImportError as import_error:
     if platform.system() == "Windows":
         raise ImportError(
-            "ERROR: pyzbar or zbar not found CovidPy won't work without it\nsince you are on windows zbar should be included with pyzbar."
-        )
-    elif platform.system() == "Linux":
+            """ERROR: pyzbar or zbar not found CovidPy won't work without it
+            since you are on windows zbar should be included with pyzbar."""
+        ) from import_error
+    if platform.system() == "Linux":
         raise ImportError(
-            "ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager ('sudo apt install libzbar0' on debian-based distros)."
-        )
-    elif platform.system() == "Darwin":
+            """ERROR: pyzbar or zbar not found CovidPy won't work without it
+            please install pyzbar using pip or zbar using your package manager.
+            example: 'sudo apt install libzbar0 on debian-based distros."""
+        ) from import_error
+    if platform.system() == "Darwin":
         raise ImportError(
-            "ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager ('brew install zbar' on Mac OS X)."
-        )
-    else:
-        raise ImportError(
-            "ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager."
-        )
+            """ERROR: pyzbar or zbar not found CovidPy won't work without it
+            please install pyzbar using pip or zbar using your package manager.
+            example: brew install zbar on Mac OS X."""
+        ) from import_error
+    raise ImportError(
+        """ERROR: pyzbar or zbar not found CovidPy won't work without it
+        please install pyzbar using pip or zbar using your package manager."""
+    ) from import_error
+
 from base45 import b45encode, b45decode
 from cose.algorithms import Es256
 from cose.keys.curves import P256
@@ -72,41 +77,41 @@ class CovidPy:
         data = pyzbar.pyzbar.decode(img)
         try:
             cert = data[0].data.decode()
-        except IndexError:
+        except IndexError  as index_error:
             raise InvalidDCC(
                 "The given code is not a DCC, check the 'details' attribute for more details",
                 "QR_NOT_FOUND",
-            )
+            ) from index_error
         if cert.startswith("HC1:"):
             b45data = cert.replace("HC1:", "")
             compresseddata = b45decode(b45data)
             decompressed = zlib.decompress(compresseddata)
             return decompressed
-        else:
-            raise InvalidDCC(
-                "The given code is not a DCC, check the 'details' attribute for more details",
-                "HC1_MISSING",
-            )
 
-    def __getUVCI(self, dictionary):
+        raise InvalidDCC(
+            "The given code is not a DCC, check the 'details' attribute for more details",
+            "HC1_MISSING",
+        )
+
+    def __get_uvci(self, dictionary):
         for key, value in dictionary.items():
             if isinstance(value, dict):
                 if (val := self.__get_uvci(value)) is not None:
                     return val
             elif isinstance(value, list):
-                for v in value:
-                    if isinstance(v, dict):
-                        ci = v.get("ci", None)
-                        return ci
-            else:
+                for new_value in value:
+                    if isinstance(new_value, dict):
+                        ci_value = new_value.get("ci", None)
+                        return ci_value
+            elif isinstance(key, str):
                 if key == "ci":
                     return value
-        else:
-            return None
+                return None
+        return None
 
     def __is_blacklisted(self, raw: dict):
-        ci = self.__getUVCI(raw)
-        return ci in self.__verifier.blacklist
+        ci_value = self.__get_uvci(raw)
+        return ci_value in self.__verifier.blacklist
 
     def decode(self, cert):
         cbordata = self.__decodecertificate(cert)
@@ -145,19 +150,23 @@ class CovidPy:
         return qrcode.make(out), out
 
     def encode(self, data: dict) -> QRCode:
-        gqr = self.__genqr(data)
-        qr = QRCode(gqr[0], gqr[1], self.__is_blacklisted(data), self)
-        return qr
+        gen_qr = self.__genqr(data)
+        qr_code = QRCode(gen_qr[0], gen_qr[1], self.__is_blacklisted(data), self)
+        return qr_code
 
     def verify(self, cert) -> VerifyResult:
-        bl = self.__is_blacklisted(self.decode(cert))
-        if not self.__disableblacklist and not bl:
+        revoked = self.__is_blacklisted(self.decode(cert))
+        if not revoked and not self.__disableblacklist:
             return VerifyResult(
                 self.__verifier.is_valid(self.__decodecertificate(cert)), False
             )
-        elif bl and self.__disableblacklist:
+        if revoked and self.__disableblacklist:
             return VerifyResult(
                 self.__verifier.is_valid(self.__decodecertificate(cert)), None
             )
-        elif bl and not self.__disableblacklist:
+        if revoked and not self.__disableblacklist:
             return VerifyResult(False, True)
+
+        return VerifyResult(
+            self.__verifier.is_valid(self.__decodecertificate(cert)), False
+        )
