@@ -1,4 +1,4 @@
-# This file is part of CovidPy v0.0.7.
+# This file is part of CovidPy v0.0.8.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -9,9 +9,10 @@
 
 import os
 
-version = "0.0.7"
+version = "0.0.8"
 
 notice  = f"""
+# Copyright (c) 2022, CovidPyLib
 # This file is part of CovidPy v{version}.
 #
 # The project has been distributed in the hope it will be useful,
@@ -27,7 +28,7 @@ for root, dirs, files in os.walk('covidpy'):
         try:
             f = open(f'covidpy\\{file}', 'r+')
             cont = f.read()
-            if cont.lstrip().startswith('# This file is part of CovidPy v'):
+            if cont.lstrip().startswith('# Copyright (c)'):
                 cont = notice + cont[len(notice):]
                 f.seek(0)
                 f.write(cont)

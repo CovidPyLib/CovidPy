@@ -1,5 +1,6 @@
 
-# This file is part of CovidPy v0.0.7.
+# Copyright (c) 2022, CovidPyLib
+# This file is part of CovidPy v0.0.8.
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -7,11 +8,23 @@
 #
 # You can use it and/or modify it under the terms of the GNU General Public License v3.0 or later.
 # You should have received a copy of the GNU General Public License along with the project.
+
 import os
 import qrcode
 import zlib
 import cbor2
-import pyzbar.pyzbar
+import platform
+try:
+    import pyzbar.pyzbar
+except ImportError:
+    if platform.system() == 'Windows':
+        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nsince you are on windows zbar should be included with pyzbar.")
+    elif platform.system() == 'Linux':
+        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager ('sudo apt install libzbar0' on debian-based distros).")
+    elif platform.system() == 'Darwin':
+        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager ('brew install zbar' on Mac OS X).")
+    else:
+        raise ImportError("ERROR: pyzbar or zbar not found CovidPy won't work without it\nplease install pyzbar using pip or zbar using your package manager.") 
 from base45 import b45encode, b45decode
 from cose.algorithms import Es256
 from cose.keys.curves import P256
@@ -110,10 +123,10 @@ class CovidPy:
         msg = Sign1Message(phdr={Algorithm: Es256, KID: keyid}, payload=cbordata)
 
         cose_key = {
-        KpKty: KtyEC2,
-        KpAlg: Es256, 
-        EC2KpCurve: P256, 
-        EC2KpD: priv,
+            KpKty: KtyEC2,
+            KpAlg: Es256, 
+            EC2KpCurve: P256, 
+            EC2KpD: priv,
         }
 
         msg.key = CoseKey.from_dict(cose_key)
@@ -129,6 +142,7 @@ class CovidPy:
         gqr = self.__genqr(data)
         qr = QRCode(gqr[0], gqr[1],self.__is_blacklisted(data), self)
         return qr
+
     def verify(self, cert) -> VerifyResult:
         bl = self.__is_blacklisted(self.decode(cert))
         if not self.__disableblacklist and not bl:
