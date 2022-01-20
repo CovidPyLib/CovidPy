@@ -35,6 +35,8 @@ class QRCode:
 
     def verify(self):
         self.__cpyinstance.verify(self)
+
+
 class VerifyResult:
     def __init__(self, is_valid: bool, is_revoked: bool):
         self.valid = is_valid
