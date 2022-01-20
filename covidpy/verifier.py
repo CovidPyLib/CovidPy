@@ -8,7 +8,7 @@
 #
 # You can use it and/or modify it under the terms of the GNU General Public License v3.0 or later.
 # You should have received a copy of the GNU General Public License along with the project.
-mport json
+import json
 from base64 import b64encode, b64decode
 import requests
 import schedule
