@@ -9,6 +9,8 @@
 # You should have received a copy of the GNU General Public License along with the project.
 
 import io
+
+from dataclasses import dataclass
 from qrcode.image.pil import PilImage
 
 
@@ -37,7 +39,7 @@ class QRCode:
         self.__cpyinstance.verify(self)
 
 
+@dataclass
 class VerifyResult:
-    def __init__(self, is_valid: bool, is_revoked: bool):
-        self.valid = is_valid
-        self.revoked = is_revoked
+    valid: bool
+    revoked: bool
