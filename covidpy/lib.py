@@ -140,9 +140,8 @@ class CovidPy:
         }
 
         msg.key = CoseKey.from_dict(cose_key)
-        out = msg.encode()
 
-        out = zlib.compress(out, 9)
+        out = zlib.compress(msg.encode(), 9)
 
         out = b"HC1:" + b45encode(out).encode("ascii")
 
