@@ -15,6 +15,7 @@ from qrcode.image.pil import PilImage
 
 from typing import Union
 
+
 class VaccinesReccs:
     pfizer_recc = """Comirnaty 30 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
 
@@ -297,17 +298,26 @@ class Certificate:
         self.raw_data = jsoncert
         self.expiry_date_ts = jsoncert[4]
         self.release_date_ts = jsoncert[6]
-        self.expiry_date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(self.expiry_date_ts))
-        self.release_date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(self.release_date_ts))
+        self.expiry_date = time.strftime(
+            "%Y-%m-%d %H:%M:%S", time.gmtime(self.expiry_date_ts)
+        )
+        self.release_date = time.strftime(
+            "%Y-%m-%d %H:%M:%S", time.gmtime(self.release_date_ts)
+        )
         self.country_code = jsoncert[1]
         self.owner = Person(jsoncert[-260][1]["nam"], jsoncert[-260][1]["dob"])
         self.version = jsoncert[-260][1]["ver"]
         self.certificate_type = None
-        self.vaccination_certificate:VaccinationCertificateInfo = None
-        self.recovery_certificate:RecoveryCertificateInfo = None
-        self.test_certificate:TestCertificateInfo = None
-        self.unknown_certificate:dict = None
-        self.certificate: Union[VaccinationCertificateInfo, RecoveryCertificateInfo, TestCertificateInfo, dict] = None
+        self.vaccination_certificate: VaccinationCertificateInfo = None
+        self.recovery_certificate: RecoveryCertificateInfo = None
+        self.test_certificate: TestCertificateInfo = None
+        self.unknown_certificate: dict = None
+        self.certificate: Union[
+            VaccinationCertificateInfo,
+            RecoveryCertificateInfo,
+            TestCertificateInfo,
+            dict,
+        ] = None
         if jsoncert[-260][1].get("v", None):
             self.certificate_type = "vaccine"
             self.vaccination_certificate = [
