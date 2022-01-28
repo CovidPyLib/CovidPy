@@ -25,6 +25,9 @@ or
 pip install git+https://github.com/covidpylib/covidpy
 ```
 
+### Examples
+If you are searching for an example you can try [GreenPassValidator](https://github.com/CovidPyLib/GreenPassValidator), a very simple telegram bot that shows how to use this library
+
 ## Credits
 
 - Files used to encode DCCs were generated using [this](https://github.com/ehn-dcc-development/ehn-sign-verify-python-trivial/blob/main/gen-csca-dsc.sh) 
