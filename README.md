@@ -13,6 +13,18 @@ Please remember that this library is in it's early stages and it's not complete,
 if you have any question you can open an issue or ask me on [telegram](https://t.me/cagavo)
 if you know how to improve this library, please send me a pull request, you can find a list of things to do [here](#TODO)
 
+### Installing
+
+``` bash
+pip install covidpylib
+```
+
+or
+
+``` bash
+pip install git+https://github.com/covidpylib/covidpy
+```
+
 ## Credits
 
 - Files used to encode DCCs were generated using [this](https://github.com/ehn-dcc-development/ehn-sign-verify-python-trivial/blob/main/gen-csca-dsc.sh) 
