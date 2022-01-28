@@ -9,7 +9,7 @@
 
 from setuptools import setup, find_packages
 
-version = "0.0.9"
+version = "0.1.0"
 
 with open("README.md", encoding="utf-8") as f:
     readme = f.read().replace("🦠", "")
@@ -19,7 +19,7 @@ requirements = [
     "requests",
     "qrcode",
     "pyzbar",
-    "cryptography>=3.4.2",
+    "cryptography>=3.4.2", #security bug + compatibility
     "cose",
     "cbor2",
     "base45",
@@ -35,7 +35,7 @@ setup(
     author="Doggy",
     license="GPLv3+",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",

@@ -51,7 +51,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 import PIL
 
 from .verifier import DCCVerifier
-from .types import QRCode, VerifyResult
+from .types import QRCode, VerifyResult, Certificate
 from .errors import InvalidDCC
 
 
@@ -112,10 +112,11 @@ class CovidPy:
         ci_value = self.__get_uvci(raw)
         return ci_value in self.__verifier.blacklist
 
-    def decode(self, cert):
+    def decode(self, cert) -> Certificate:
         cbordata = self.__decodecertificate(cert)
         decoded = cbor2.loads(cbordata)
-        return cbor2.loads(decoded.value[2])
+        cbl = cbor2.loads(decoded.value[2])
+        return Certificate(cbl)
 
     def __genqr(self, payload: dict):
         cbordata = cbor2.dumps(payload)

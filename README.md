@@ -1,4 +1,4 @@
-# W.I.P. CovidPy 🦠
+# CovidPy BETA 🦠
 
 CovidPy is a python library to work with DCCs (Digital Covid Certificates).
 Using this library you can:
@@ -33,3 +33,6 @@ if you know how to improve this library, please send me a pull request, you can 
 
 - https://forum.italia.it/t/verifica-green-pass-api/25190/85?page=5
 - https://github.com/ministero-salute/dcc-utils/issues/1
+- https://ec.europa.eu/health/system/files/2021-04/digital-green-certificates_dt-specifications_en_0.pdf
+- https://ec.europa.eu/health/documents/community-register/html/
+- https://github.com/ehn-dcc-development/ehn-dcc-schema
