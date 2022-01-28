@@ -310,16 +310,16 @@ class Certificate:
         if jsoncert.get("v", None):
             self.ceritificate_type = "vaccine"
             self.vaccination_certificate = [
-                VaccinationCertificateInfo(x) for x in self.jsoncert["v"]
+                VaccinationCertificateInfo(x) for x in jsoncert["v"]
             ]
         elif jsoncert.get("r", None):
             self.ceritificate_type = "recovery"
             self.recovery_certificate = [
-                RecoveryCertificateInfo(x) for x in self.jsoncert["r"]
+                RecoveryCertificateInfo(x) for x in jsoncert["r"]
             ]
         elif jsoncert.get("t", None):
             self.ceritificate_type = "test"
-            self.test_certificate = [TestCertificateInfo(x) for x in self.jsoncert["t"]]
+            self.test_certificate = [TestCertificateInfo(x) for x in jsoncert["t"]]
         else:
             self.ceritificate_type = "unknown"
             self.unknown_certificate = jsoncert
