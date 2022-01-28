@@ -10,31 +10,34 @@
 
 import time
 import io
+
+from dataclasses import dataclass
 from qrcode.image.pil import PilImage
 
 
-pfizer_recc = """Comirnaty 30 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
+class VaccinesReccs:
+    pfizer_recc = """Comirnaty 30 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
 
-Comirnaty 30 micrograms/dose dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
+    Comirnaty 30 micrograms/dose dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
 
-Comirnaty 10 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in children aged 5 to 11 years.
+    Comirnaty 10 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in children aged 5 to 11 years.
 
-The use of this vaccine should be in accordance with official recommendations."""
+    The use of this vaccine should be in accordance with official recommendations."""
 
-janssen_recc = """COVID-19 Vaccine Janssen is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 in individuals 18 years of age and older.
+    janssen_recc = """COVID-19 Vaccine Janssen is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 in individuals 18 years of age and older.
 
-The use of this vaccine should be in accordance with official recommendations."""
+    The use of this vaccine should be in accordance with official recommendations."""
 
-novavax_recc = """Nuvaxovid is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 in individuals 18 years of age and older.
+    novavax_recc = """Nuvaxovid is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 in individuals 18 years of age and older.
 
-The use of this vaccine should be in accordance with official recommendations."""
+    The use of this vaccine should be in accordance with official recommendations."""
 
-moderna_recc = """Spikevax is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 in individuals 12 years of age and older.
+    moderna_recc = """Spikevax is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 in individuals 12 years of age and older.
 
-The use of this vaccine should be in accordance with official recommendations."""
+    The use of this vaccine should be in accordance with official recommendations."""
 
-az_recc = """Vaxzevria is indicated for active immunisation to prevent COVID 19 caused by SARS CoV 2, in individuals 18 years of age and older.
-The use of this vaccine should be in accordance with official recommendations."""
+    az_recc = """Vaxzevria is indicated for active immunisation to prevent COVID 19 caused by SARS CoV 2, in individuals 18 years of age and older.
+    The use of this vaccine should be in accordance with official recommendations."""
 
 class QRCode:
     def __init__(
@@ -59,10 +62,12 @@ class QRCode:
 
     def verify(self):
         self.__cpyinstance.verify(self)
+
+
+@dataclass
 class VerifyResult:
-    def __init__(self, is_valid: bool, is_revoked: bool):
-        self.valid = is_valid
-        self.revoked = is_revoked
+    valid: bool
+    revoked: bool
 
 class VaccineInfo:
     def __init__(self, codename=None,knownas=None,name=None,productor=None,indications=None,substance=None,emalink=None) -> None:
@@ -85,11 +90,11 @@ class VaccineInfo:
         })
 
 eu_codenames:dict = {
-        'EU/1/20/1528': VaccineInfo('EU/1/20/1528', 'Pfizer', 'Comirnaty', 'BioNTech Manufacturing GmbH', pfizer_recc, 'tozinameran, COVID-19 mRNA vaccine (nucleoside-modified)', 'https://www.ema.europa.eu/en/medicines/human/summaries-opinion/comirnaty'),
-        'EU/1/20/1525': VaccineInfo('EU/1/20/1525', 'Janssen', 'COVID-19 Vaccine Janssen', 'Janssen-Cilag International NV', janssen_recc, 'COVID-19 vaccine (Ad26.COV2-S [recombinant])', 'https://www.ema.europa.eu/en/medicines/human/EPAR/covid-19-vaccine-janssen'),
-        'EU/1/21/1618': VaccineInfo('EU/1/21/1618', 'Novavax', 'Nuvaxovid', 'Novavax CZ, a.s.', novavax_recc, 'COVID-19 Vaccine (recombinant, adjuvanted)', None),
-        'EU/1/20/1507': VaccineInfo('EU/1/20/1507', 'Moderna', 'Spikevax', 'MODERNA BIOTECH SPAIN, S.L.', moderna_recc, 'COVID-19 mRNA Vaccine (nucleoside modified)', 'https://www.ema.europa.eu/en/medicines/human/summaries-opinion/covid-19-vaccine-moderna'),
-        'EU/1/21/1529': VaccineInfo('EU/1/21/1529', 'AstraZeneca', 'Vaxzevria', 'AstraZeneca AB', az_recc, 'COVID-19 Vaccine (ChAdOx1-S [recombinant])', 'https://www.ema.europa.eu/en/medicines/human/EPAR/vaxzevria-previously-covid-19-vaccine-astrazeneca')
+        'EU/1/20/1528': VaccineInfo('EU/1/20/1528', 'Pfizer', 'Comirnaty', 'BioNTech Manufacturing GmbH', VaccinesReccs.pfizer_recc, 'tozinameran, COVID-19 mRNA vaccine (nucleoside-modified)', 'https://www.ema.europa.eu/en/medicines/human/summaries-opinion/comirnaty'),
+        'EU/1/20/1525': VaccineInfo('EU/1/20/1525', 'Janssen', 'COVID-19 Vaccine Janssen', 'Janssen-Cilag International NV', VaccinesReccs.janssen_recc, 'COVID-19 vaccine (Ad26.COV2-S [recombinant])', 'https://www.ema.europa.eu/en/medicines/human/EPAR/covid-19-vaccine-janssen'),
+        'EU/1/21/1618': VaccineInfo('EU/1/21/1618', 'Novavax', 'Nuvaxovid', 'Novavax CZ, a.s.', VaccinesReccs.novavax_recc, 'COVID-19 Vaccine (recombinant, adjuvanted)', None),
+        'EU/1/20/1507': VaccineInfo('EU/1/20/1507', 'Moderna', 'Spikevax', 'MODERNA BIOTECH SPAIN, S.L.', VaccinesReccs.moderna_recc, 'COVID-19 mRNA Vaccine (nucleoside modified)', 'https://www.ema.europa.eu/en/medicines/human/summaries-opinion/covid-19-vaccine-moderna'),
+        'EU/1/21/1529': VaccineInfo('EU/1/21/1529', 'AstraZeneca', 'Vaxzevria', 'AstraZeneca AB', VaccinesReccs.az_recc, 'COVID-19 Vaccine (ChAdOx1-S [recombinant])', 'https://www.ema.europa.eu/en/medicines/human/EPAR/vaxzevria-previously-covid-19-vaccine-astrazeneca')
 }
 
 diseasedict:dict = {'840539006': 'Covid-19 (SARS-CoV-1)'}
