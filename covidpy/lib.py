@@ -92,21 +92,14 @@ class CovidPy:
             "HC1_MISSING",
         )
 
-    def __get_uvci(self, dictionary):
-        for key, value in dictionary.items():
-            if isinstance(value, dict):
-                if (val := self.__get_uvci(value)) is not None:
-                    return val
-            elif isinstance(value, list):
-                for new_value in value:
-                    if isinstance(new_value, dict):
-                        ci_value = new_value.get("ci", None)
-                        return ci_value
-            elif isinstance(key, str):
-                if key == "ci":
-                    return value
-                return None
-        return None
+    def __get_uvci(self, cert):
+        if isinstance(cert, Certificate):
+            return cert.certificate[0].certificate_identifier
+        else:
+            raise InvalidDCC(
+                "The given code is not a DCC, check the 'details' attribute for more details",
+                "UNKNOWN_CERTIFICATE"
+            )
 
     def __is_blacklisted(self, raw: dict):
         ci_value = self.__get_uvci(raw)

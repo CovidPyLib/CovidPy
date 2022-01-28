@@ -13,6 +13,7 @@ import io
 from dataclasses import dataclass
 from qrcode.image.pil import PilImage
 
+from typing import Union
 
 class VaccinesReccs:
     pfizer_recc = """Comirnaty 30 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
@@ -296,32 +297,39 @@ class Certificate:
         self.raw_data = jsoncert
         self.expiry_date_ts = jsoncert[4]
         self.release_date_ts = jsoncert[6]
-        self.expiry_date = time.strftime("%Y-%m-%d %H:%M:%S", self.expiry_date_ts)
-        self.release_date = time.strftime("%Y-%m-%d %H:%M:%S", self.release_date_ts)
+        self.expiry_date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(self.expiry_date_ts))
+        self.release_date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(self.release_date_ts))
         self.country_code = jsoncert[1]
         self.owner = Person(jsoncert[-260][1]["nam"], jsoncert[-260][1]["dob"])
         self.version = jsoncert[-260][1]["ver"]
-        self.ceritificate_type = None
-        self.vaccination_certificate = None
-        self.recovery_certificate = None
-        self.test_certificate = None
-        self.unknown_certificate = None
-        if jsoncert.get("v", None):
-            self.ceritificate_type = "vaccine"
+        self.certificate_type = None
+        self.vaccination_certificate:VaccinationCertificateInfo = None
+        self.recovery_certificate:RecoveryCertificateInfo = None
+        self.test_certificate:TestCertificateInfo = None
+        self.unknown_certificate:dict = None
+        self.certificate: Union[VaccinationCertificateInfo, RecoveryCertificateInfo, TestCertificateInfo, dict] = None
+        if jsoncert[-260][1].get("v", None):
+            self.certificate_type = "vaccine"
             self.vaccination_certificate = [
-                VaccinationCertificateInfo(x) for x in jsoncert["v"]
+                VaccinationCertificateInfo(x) for x in jsoncert[-260][1]["v"]
             ]
-        elif jsoncert.get("r", None):
-            self.ceritificate_type = "recovery"
+            self.certificate = self.vaccination_certificate
+        elif jsoncert[-260][1].get("r", None):
+            self.certificate_type = "recovery"
             self.recovery_certificate = [
-                RecoveryCertificateInfo(x) for x in jsoncert["r"]
+                RecoveryCertificateInfo(x) for x in jsoncert[-260][1]["r"]
             ]
-        elif jsoncert.get("t", None):
-            self.ceritificate_type = "test"
-            self.test_certificate = [TestCertificateInfo(x) for x in jsoncert["t"]]
+            self.certificate = self.recovery_certificate
+        elif jsoncert[-260][1].get("t", None):
+            self.certificate_type = "test"
+            self.test_certificate = [
+                TestCertificateInfo(x) for x in jsoncert[-260][1]["t"]
+            ]
+            self.certificate = self.test_certificate
         else:
-            self.ceritificate_type = "unknown"
+            self.certificate_type = "unknown"
             self.unknown_certificate = jsoncert
+            self.certificate = self.unknown_certificate
 
     def __str__(self) -> str:
         return str(
