@@ -100,7 +100,7 @@ class CovidPy:
         else:
             raise InvalidDCC(
                 "The given code is not a DCC, check the 'details' attribute for more details",
-                "UNKNOWN_CERTIFICATE"
+                "UNKNOWN_CERTIFICATE",
             )
 
     def __is_blacklisted(self, raw: dict):
