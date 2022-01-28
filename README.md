@@ -1,5 +1,7 @@
 # CovidPy BETA 🦠
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/340c661b7668410b977e42a2c351cffa)](https://app.codacy.com/gh/CovidPyLib/CovidPy?utm_source=github.com&utm_medium=referral&utm_content=CovidPyLib/CovidPy&utm_campaign=Badge_Grade_Settings)
+
 CovidPy is a python library to work with DCCs (Digital Covid Certificates).
 Using this library you can:
 
