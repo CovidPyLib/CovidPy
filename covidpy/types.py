@@ -259,7 +259,7 @@ class TestCertificateInfo:
         else:
             self.rat_test = RATest(jsoni)
         self.test_result_code = jsoni["tr"]
-        self.covid_detected = True if self.test_result_code == "260373001" else False
+        self.covid_detected = self.test_result_code == "260373001"
         self.test_manufacturer = jsoni["ma"]
         self.disease = diseasedict[jsoni["tg"]]
         self.disease_code = jsoni["tg"]

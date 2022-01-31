@@ -26,18 +26,15 @@ notice = f"""
 for root, dirs, files in os.walk("covidpy"):
     for file in files:
         try:
-            f = open(f"covidpy\\{file}", "r+")
-            cont = f.read()
-            if cont.lstrip().startswith("# Copyright (c)"):
-                cont = notice + cont[len(notice) :]
-                f.seek(0)
-                f.write(cont)
+            with open(f"covidpy\\{file}", "r+") as f:
+                cont = f.read()
+                if cont.lstrip().startswith("# Copyright (c)"):
+                    cont = notice + cont[len(notice) :]
+                    f.seek(0)
+                    f.write(cont)
+                else:
+                    f.seek(0)
+                    f.write(notice)
                 f.truncate()
-                f.close()
-            else:
-                f.seek(0)
-                f.write(notice)
-                f.truncate()
-                f.close()
         except:
             pass
