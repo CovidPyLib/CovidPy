@@ -1,5 +1,5 @@
 # Copyright (c) 2022, CovidPyLib
-# This file is part of CovidPy v0.1.1.
+# This file is part of CovidPy v0.1.2
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,7 +25,7 @@ except ImportError as import_error:
         raise ImportError(
             """ERROR: pyzbar or zbar not found CovidPy won't work without it
             please install pyzbar using pip or zbar using your package manager.
-            example: 'sudo apt install libzbar0 on debian-based distros."""
+            example: sudo apt install libzbar0 on debian-based distros."""
         ) from import_error
     if platform.system() == "Darwin":
         raise ImportError(
@@ -55,22 +55,36 @@ from .verifier import DCCVerifier
 from .types import QRCode, VerifyResult, Certificate
 from .errors import InvalidDCC
 
-
 class CovidPy:
     def __init__(
         self,
         disable_keys_update: bool = False,
-        disable_blalcklist_update: bool = False,
+        disable_blacklist_update: bool = False,
         disable_blacklist: bool = False,
     ) -> None:
-        self.__autoblacklist = disable_blalcklist_update
+        self.__autoblacklist = disable_blacklist_update
         self.__autokids = disable_keys_update
         self.__disableblacklist = disable_blacklist
         self.__verifier = DCCVerifier(self.__autoblacklist, self.__autokids)
         self.__verifier.load_eu_keys()
         if not self.__disableblacklist:
             self.__verifier.load_blacklist()
-        self.certspath = "certs"
+        self.__dscworkerpem = (r'-----BEGIN CERTIFICATE-----'
+r'MIIBXzCCAQUCEBcHI+fTFbKUN8AhX4B41swwCgYIKoZIzj0EAwIwMjEjMCEGA1UE'
+r'AwwaTmF0aW9uYWwgQ1NDQSBvZiBGcmllc2xhbmQxCzAJBgNVBAYTAkZSMB4XDTIx'
+r'MTEwMTEzMTQyMVoXDTI2MDkxNjEzMTQyMVowNjEnMCUGA1UEAwweRFNDIG51bWJl'
+r'ciB3b3JrZXIgb2YgRnJpZXNsYW5kMQswCQYDVQQGEwJGUjBZMBMGByqGSM49AgEG'
+r'CCqGSM49AwEHA0IABABcawF9OaBFQtkkmoS35RV6hgs+7MvT4uAkmIivAxQc8jka'
+r'1SgdagspK4S+Q1KbhN0rB/L0M8dwnGJACQDtE8YwCgYIKoZIzj0EAwIDSAAwRQIg'
+r'V3UerYPuSfvPJ19j7NKMzh5Hupn2x4poKsWfZp+sZbMCIQDY3qjg8RT/ALfiyfV+'
+r'HTnXm2xsSKEv5Mafw88CaUqMsA=='
+r'-----END CERTIFICATE-----')
+        self.__dscworkerkey = (r'-----BEGIN EC PRIVATE KEY-----'
+r'MHcCAQEEIOWIj7qstVUIO0k6GszFh9i+9HGXBC+Sxf3G+3sHU0a7oAoGCCqGSM49'
+r'AwEHoUQDQgAEAFxrAX05oEVC2SSahLflFXqGCz7sy9Pi4CSYiK8DFBzyORrVKB1q'
+r'CykrhL5DUpuE3SsH8vQzx3CcYkAJAO0Txg=='
+r'-----END EC PRIVATE KEY-----')
+
 
     def __decodecertificate(self, cert):
         img = PIL.Image.open(cert) if isinstance(cert, str) else cert.to_bytesio
@@ -85,8 +99,7 @@ class CovidPy:
         if cert.startswith("HC1:"):
             b45data = cert.replace("HC1:", "")
             compresseddata = b45decode(b45data)
-            decompressed = zlib.decompress(compresseddata)
-            return decompressed
+            return zlib.decompress(compresseddata)
 
         raise InvalidDCC(
             "The given code is not a DCC, check the 'details' attribute for more details",
@@ -113,17 +126,14 @@ class CovidPy:
         return Certificate(cbl)
 
     def __genqr(self, payload: dict):
-        cbordata = cbor2.dumps(payload)
-        with open(f"{self.certspath}\\dsc-worker.pem", "rb") as file:
-            pem = file.read()
-            cert = x509.load_pem_x509_certificate(pem)
-            fingerprint = cert.fingerprint(hashes.SHA256())
-            keyid = fingerprint[0:8]
+        cbordata = cbor2.dumps(payload) #pem load
+        cert = x509.load_pem_x509_certificate(self.__dscworkerpem)
+        fingerprint = cert.fingerprint(hashes.SHA256())
+        keyid = fingerprint[:8]
 
-        with open(f"{self.certspath}\\dsc-worker.key", "rb") as file:
-            pem = file.read()
-            keyfile = load_pem_private_key(pem, password=None)
-            priv = keyfile.private_numbers().private_value.to_bytes(32, byteorder="big")
+
+        keyfile = load_pem_private_key(self.__dscworkerkey, password=None) #key load
+        priv = keyfile.private_numbers().private_value.to_bytes(32, byteorder="big")
 
         msg = Sign1Message(phdr={Algorithm: Es256, KID: keyid}, payload=cbordata)
 
@@ -144,8 +154,7 @@ class CovidPy:
 
     def encode(self, data: dict) -> QRCode:
         gen_qr = self.__genqr(data)
-        qr_code = QRCode(gen_qr[0], gen_qr[1], self.__is_blacklisted(data), self)
-        return qr_code
+        return QRCode(gen_qr[0], gen_qr[1], self.__is_blacklisted(data), self)
 
     def verify(self, cert) -> VerifyResult:
         revoked = self.__is_blacklisted(self.decode(cert))

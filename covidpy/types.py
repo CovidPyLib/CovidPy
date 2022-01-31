@@ -1,5 +1,5 @@
 # Copyright (c) 2022, CovidPyLib
-# This file is part of CovidPy v0.1.1.
+# This file is part of CovidPy v0.1.2
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -259,7 +259,7 @@ class TestCertificateInfo:
         else:
             self.rat_test = RATest(jsoni)
         self.test_result_code = jsoni["tr"]
-        self.covid_detected = True if self.test_result_code == "260373001" else False
+        self.covid_detected = self.test_result_code == "260373001"
         self.test_manufacturer = jsoni["ma"]
         self.disease = diseasedict[jsoni["tg"]]
         self.disease_code = jsoni["tg"]
@@ -348,7 +348,7 @@ class Certificate:
                 "country_code": self.country_code,
                 "owner": self.owner,
                 "version": self.version,
-                "ceritificate_type": self.ceritificate_type,
+                "certificate_type": self.certificate_type,
                 "vaccination_certificate": self.vaccination_certificate,
                 "recovery_certificate": self.recovery_certificate,
                 "test_certificate": self.test_certificate,

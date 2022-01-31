@@ -1,4 +1,4 @@
-# This file is part of CovidPy v0.1.1
+# This file is part of CovidPy v0.1.2
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -9,7 +9,7 @@
 
 from setuptools import setup, find_packages
 
-version = "0.1.1"
+version = "0.1.2"
 
 with open("README.md", encoding="utf-8") as f:
     readme = f.read().replace("🦠", "")
