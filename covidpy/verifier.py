@@ -36,7 +36,7 @@ class DCCVerifier:
             self.sched = schedule.every().day.at("08:00").do(self.reload_all)
         elif self.disblrefresh and not self.diskidsrefresh:
             self.sched = schedule.every().day.at("08:00").do(self.reload_kids)
-        elif self.diskidsrefresh and not self.disblrefresh:
+        elif not self.disblrefresh:
             self.sched = schedule.every().day.at("08:00").do(self.reload_bl)
 
     def reload_all(self):
@@ -74,8 +74,6 @@ class DCCVerifier:
                     EC2KpY: pub.public_numbers().y.to_bytes(32, byteorder="big"),
                 }
             )
-        else:
-            pass  # INVALID TYPE
 
     def load_blacklist(self):
         settings = requests.get("https://get.dgc.gov.it/v1/dgc/settings").json()
@@ -99,7 +97,7 @@ class DCCVerifier:
         cose = CoseMessage.decode(key)
         a_kid = cose.phdr[KID] if KID in cose.phdr.keys() else cose.uhdr[KID]
         b64_a_kid = b64encode(a_kid).decode("ASCII")
-        if not b64_a_kid in self.kids:
+        if b64_a_kid not in self.kids:
             return False
         key = self.kids[b64_a_kid]
         cose.key = key

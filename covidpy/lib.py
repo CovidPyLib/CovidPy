@@ -85,8 +85,7 @@ class CovidPy:
         if cert.startswith("HC1:"):
             b45data = cert.replace("HC1:", "")
             compresseddata = b45decode(b45data)
-            decompressed = zlib.decompress(compresseddata)
-            return decompressed
+            return zlib.decompress(compresseddata)
 
         raise InvalidDCC(
             "The given code is not a DCC, check the 'details' attribute for more details",
@@ -118,7 +117,7 @@ class CovidPy:
             pem = file.read()
             cert = x509.load_pem_x509_certificate(pem)
             fingerprint = cert.fingerprint(hashes.SHA256())
-            keyid = fingerprint[0:8]
+            keyid = fingerprint[:8]
 
         with open(f"{self.certspath}\\dsc-worker.key", "rb") as file:
             pem = file.read()
@@ -144,8 +143,7 @@ class CovidPy:
 
     def encode(self, data: dict) -> QRCode:
         gen_qr = self.__genqr(data)
-        qr_code = QRCode(gen_qr[0], gen_qr[1], self.__is_blacklisted(data), self)
-        return qr_code
+        return QRCode(gen_qr[0], gen_qr[1], self.__is_blacklisted(data), self)
 
     def verify(self, cert) -> VerifyResult:
         revoked = self.__is_blacklisted(self.decode(cert))
@@ -157,7 +155,7 @@ class CovidPy:
             return VerifyResult(
                 self.__verifier.is_valid(self.__decodecertificate(cert)), None
             )
-        if revoked and not self.__disableblacklist:
+        if revoked:
             return VerifyResult(False, True)
 
         return VerifyResult(
