@@ -6,3 +6,4 @@ cryptography>=3.4.2
 cose
 cbor2
 base45
+importlib
