@@ -23,7 +23,7 @@ requirements = [
     "cose",
     "cbor2",
     "base45",
-    "importlib"
+    "importlib",
 ]
 
 setup(

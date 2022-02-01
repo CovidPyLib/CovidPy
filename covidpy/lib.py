@@ -12,7 +12,7 @@ import platform
 import zlib
 import qrcode
 import cbor2
-import importlib.resources as pkg_resources #https://stackoverflow.com/questions/6028000/how-to-read-a-static-file-from-inside-a-python-package 
+import importlib.resources as pkg_resources  # https://stackoverflow.com/questions/6028000/how-to-read-a-static-file-from-inside-a-python-package
 from . import certs
 
 try:
