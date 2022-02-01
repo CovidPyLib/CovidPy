@@ -72,6 +72,7 @@ class QRCode:
         self.pil_img.save(bio)
         return bio
 
+
 @dataclass
 class VerifyResult:
     valid: bool

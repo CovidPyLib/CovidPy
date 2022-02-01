@@ -107,7 +107,7 @@ class CovidPy:
                 elif isinstance(value, list):
                     for new_value in value:
                         if isinstance(new_value, dict):
-                            return new_value.get("ci", None) 
+                            return new_value.get("ci", None)
                 elif isinstance(key, str):
                     if key == "ci":
                         return value
