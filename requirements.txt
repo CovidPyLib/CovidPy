@@ -5,5 +5,5 @@ pyzbar
 cryptography>=3.4.2
 cose
 cbor2
-base45
+base45>=0.4.3
 importlib

@@ -72,13 +72,6 @@ class QRCode:
         self.pil_img.save(bio)
         return bio
 
-    def decode(self):
-        self.__cpyinstance.decode(self)
-
-    def verify(self):
-        self.__cpyinstance.verify(self)
-
-
 @dataclass
 class VerifyResult:
     valid: bool

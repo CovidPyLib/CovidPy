@@ -74,7 +74,10 @@ class CovidPy:
             self.__verifier.load_blacklist()
 
     def __decodecertificate(self, cert):
-        img = PIL.Image.open(cert) if isinstance(cert, str) else cert.to_bytesio
+        if isinstance(cert, str):
+            img = PIL.Image.open(cert)
+        else:
+            raise TypeError("The given certificate is not a path")
         data = pyzbar.pyzbar.decode(img)
         try:
             cert = data[0].data.decode()
@@ -104,8 +107,7 @@ class CovidPy:
                 elif isinstance(value, list):
                     for new_value in value:
                         if isinstance(new_value, dict):
-                            ci_value = new_value.get("ci", None)
-                            return ci_value
+                            return new_value.get("ci", None) 
                 elif isinstance(key, str):
                     if key == "ci":
                         return value
@@ -153,7 +155,7 @@ class CovidPy:
 
         out = zlib.compress(msg.encode(), 9)
 
-        out = b"HC1:" + b45encode(out).encode("ascii")
+        out = bytes("HC1:" + str(b45encode(out), "ascii"), "ascii")
 
         return qrcode.make(out), out
 
