@@ -57,6 +57,7 @@ from .verifier import DCCVerifier
 from .types import QRCode, VerifyResult, Certificate
 from .errors import InvalidDCC
 
+
 class CovidPy:
     def __init__(
         self,
@@ -109,7 +110,7 @@ class CovidPy:
                     if key == "ci":
                         return value
                     return None
-            return None    
+            return None
         else:
             raise InvalidDCC(
                 "The given code is not a DCC, check the 'details' attribute for more details",
@@ -128,13 +129,13 @@ class CovidPy:
 
     def __genqr(self, payload: dict):
         cbordata = cbor2.dumps(payload)
-        #with open(f"certs\\dsc-worker.pem", "rb") as file:
+        # with open(f"certs\\dsc-worker.pem", "rb") as file:
         pem = pkg_resources.read_binary(certs, "dsc-worker.pem")
         cert = x509.load_pem_x509_certificate(pem)
         fingerprint = cert.fingerprint(hashes.SHA256())
         keyid = fingerprint[:8]
 
-        #with open(f"certs\\dsc-worker.key", "rb") as file:
+        # with open(f"certs\\dsc-worker.key", "rb") as file:
         pem = pkg_resources.read_binary(certs, "dsc-worker.key")
         keyfile = load_pem_private_key(pem, password=None)
         priv = keyfile.private_numbers().private_value.to_bytes(32, byteorder="big")
