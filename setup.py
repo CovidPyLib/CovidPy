@@ -55,6 +55,8 @@ setup(
         "Docs": "https://github.com/CovidPyLib/CovidPy",
     },
     python_requires="~=3.7",
+    package_data={ "CovidPy": ["certs/dsc-worker.pem", "certs/dsc-worker.key"] },
+    include_package_data=True,
     packages=find_packages(exclude=["tests"]),
     install_requires=requirements,
 )

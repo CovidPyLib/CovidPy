@@ -10,12 +10,22 @@
 
 import time
 import io
+import json
 
 from dataclasses import dataclass
 from qrcode.image.pil import PilImage
 
-from typing import Union
+from typing import Union, Dict
 
+def stringify(value) -> str:
+    if isinstance(value, dict):
+        for key, val in value.items():
+            value[key] = stringify(val)
+        return json.dumps(value, indent=4)
+    elif isinstance(value, list):
+        return [item.to_dict() for item in value]
+    else:
+        return str(value)
 
 class VaccinesReccs:
     pfizer_recc = """Comirnaty 30 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
@@ -92,8 +102,19 @@ class VaccineInfo:
         self.active_substance = substance
         self.ema_link = emalink
 
+    def to_dict(self) -> dict:
+        return {
+            "eu_codename": self.eu_codename,
+            "known_as": self.known_as,
+            "vaccine_name": self.vaccine_name,
+            "productor_name": self.productor_name,
+            "eu_indications": self.eu_indications,
+            "active_substance": self.active_substance,
+            "ema_link": self.ema_link,
+        }
+
     def __str__(self) -> str:
-        return str(
+        return json.dumps(
             {
                 "eu_codename": self.eu_codename,
                 "known_as": self.known_as,
@@ -102,11 +123,12 @@ class VaccineInfo:
                 "eu_indications": self.eu_indications,
                 "active_substance": self.active_substance,
                 "ema_link": self.ema_link,
-            }
+            }, 
+            indent=4
         )
 
 
-eu_codenames: dict = {
+eu_codenames: Dict[str, VaccineInfo] = {
     "EU/1/20/1528": VaccineInfo(
         "EU/1/20/1528",
         "Pfizer",
@@ -166,15 +188,25 @@ class Person:
         self.formatted_first_name = jsonp["fnt"]
         self.formatted_last_name = jsonp["gnt"]
 
+    def to_dict(self) -> dict:
+        return {
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "date_of_birth": self.date_of_birth,
+            "formatted_first_name": self.formatted_first_name,
+            "formatted_last_name": self.formatted_last_name,
+        }
+
     def __str__(self):
-        return str(
+        return json.dumps(
             {
                 "first_name": self.first_name,
                 "last_name": self.last_name,
                 "date_of_birth": self.date_of_birth,
                 "formatted_first_name": self.formatted_first_name,
                 "formatted_last_name": self.formatted_last_name,
-            }
+            }, 
+            indent=4
         )
 
 
@@ -192,10 +224,25 @@ class VaccinationCertificateInfo:
         self.vaccine_identifier = jsoni["vp"]
         self.vaccination_country_code = jsoni["co"]
 
+    def to_dict(self) -> dict:
+        return {
+            "vaccine": self.vaccine.to_dict(),
+            "somministrated_doses": self.somministrated_doses,
+            "max_doses": self.max_doses,
+            "issuer": self.issuer,
+            "vaccination_date": self.vaccination_date,
+            "vaccination_country": self.vaccination_country,
+            "certificate_identifier": self.certificate_identifier,
+            "disease": self.disease,
+            "disease_code": self.disease_code,
+            "vaccine_identifier": self.vaccine_identifier,
+            "vaccination_country_code": self.vaccination_country_code,
+        }
+
     def __str__(self) -> str:
-        return str(
+        return json.dumps(
             {
-                "vaccine": self.vaccine,
+                "vaccine": str(self.vaccine),
                 "somministrated_doses": self.somministrated_doses,
                 "max_doses": self.max_doses,
                 "issuer": self.issuer,
@@ -205,7 +252,8 @@ class VaccinationCertificateInfo:
                 "disease": self.disease,
                 "disease_code": self.disease_code,
                 "vaccine_identifier": self.vaccine_identifier,
-            }
+            }, 
+            indent=4
         )
 
 
@@ -217,14 +265,24 @@ class NAATest:
         self.description = """The LOINC Probe.amp.tar method is used for assays that include a nucleic acid amplification step, in which many copies of the nucleic acid sequence(s) of interest are made, followed by detection of the target nucleic acid of interest using a hybridization probe. Nucleic acid amplification can be done using different techniques such as polymerase chain reaction (PCR). The primary difference between the Probe.amp.tar and Non-probe.amp.tar Methods is the technique used for target nucleic acid detection. Note that for historical reasons, this Method also includes traditional techniques for identifying PCR target amplification products, such as gel separation and staining to identify the fragments based on their expected sizes."""
         self.raw_content = jsoni
 
+    def to_dict(self) -> dict:
+        return {
+            "test_name": self.test_name,
+            "test_type_name": self.test_type_name,
+            "collection_date_iso": self.collection_date_iso,
+            "description": self.description,
+            "raw_content": self.raw_content,
+        }
+
     def __str__(self) -> str:
-        return str(
+        return json.dumps(
             {
                 "test_name": self.test_name,
                 "collection_date_iso": self.collection_date_iso,
                 "description": self.description,
                 "raw_content": self.raw_content,
-            }
+            }, 
+            indent=4
         )
 
 
@@ -237,14 +295,24 @@ class RATest:
 The rapid immunoassay (IA.rapid) method is used for IA that take 60 minutes or less from start to finish."""
         self.raw_content = jsoni
 
+    def to_dict(self) -> dict:
+        return {
+            "test_name": self.test_name,
+            "test_type_name": self.test_type_name,
+            "collection_date_iso": self.collection_date_iso,
+            "description": self.description,
+            "raw_content": self.raw_content,
+        }
+
     def __str__(self) -> str:
-        return str(
+        return json.dumps(
             {
                 "test_name": self.test_name,
                 "collection_date_iso": self.collection_date_iso,
                 "description": self.description,
                 "raw_content": self.raw_content,
-            }
+            }, 
+            indent=4
         )
 
 
@@ -252,12 +320,15 @@ class TestCertificateInfo:
     def __init__(self, jsoni) -> None:
         self.test_type_code = jsoni["tp"]
         self.test_type = "NAA" if self.test_type_code == "LP6464-4" else "RAT"
+        self.test = None
         self.naa_test = None
         self.rat_test = None
         if self.test_type_code == "LP6464-4":
             self.naa_test = NAATest(jsoni)
+            self.test = self.naa_test
         else:
             self.rat_test = RATest(jsoni)
+            self.test = self.rat_test
         self.test_result_code = jsoni["tr"]
         self.covid_detected = self.test_result_code == "260373001"
         self.test_manufacturer = jsoni["ma"]
@@ -266,13 +337,28 @@ class TestCertificateInfo:
         self.certificate_identifier = jsoni["ci"]
         self.test_country_code = jsoni["co"]
 
+    def to_dict(self) -> dict:
+        return {
+            "test_type_code": self.test_type_code,
+            "test_type": self.test_type,
+            "test": self.test.to_dict() if self.test else None,
+            "test_result_code": self.test_result_code,
+            "covid_detected": self.covid_detected,
+            "test_manufacturer": self.test_manufacturer,
+            "disease": self.disease,
+            "disease_code": self.disease_code,
+            "certificate_identifier": self.certificate_identifier,
+            "test_country_code": self.test_country_code,
+        }
+
     def __str__(self) -> str:
-        return str(
+        return json.dumps(
             {
                 "test_type_code": self.test_type_code,
                 "test_type": self.test_type,
-                "naa_test": self.naa_test,
-                "rat_test": self.rat_test,
+                "naa_test": str(self.naa_test),
+                "rat_test": str(self.rat_test),
+                "test": str(self.test),
                 "test_result_code": self.test_result_code,
                 "covid_detected": self.covid_detected,
                 "test_manufacturer": self.test_manufacturer,
@@ -280,7 +366,8 @@ class TestCertificateInfo:
                 "disease_code": self.disease_code,
                 "certificate_identifier": self.certificate_identifier,
                 "test_country_code": self.test_country_code,
-            }
+            }, 
+            indent=4
         )
 
 
@@ -293,6 +380,28 @@ class RecoveryCertificateInfo:
         self.valid_until_iso = jsoni["du"]
         self.certificate_identifier = jsoni["ci"]
 
+    def to_dict(self) -> dict:
+        return {
+            "first_positive_date_iso": self.first_positive_date_iso,
+            "country_of_test": self.country_of_test,
+            "issuer": self.issuer,
+            "valid_from_iso": self.valid_from_iso,
+            "valid_until_iso": self.valid_until_iso,
+            "certificate_identifier": self.certificate_identifier,
+        }
+
+    def __str__(self) -> str:
+        return json.dumps(
+            {
+                "first_positive_date_iso": self.first_positive_date_iso,
+                "country_of_test": self.country_of_test,
+                "issuer": self.issuer,
+                "valid_from_iso": self.valid_from_iso,
+                "valid_until_iso": self.valid_until_iso,
+                "certificate_identifier": self.certificate_identifier,
+            }, 
+            indent=4
+        )
 
 class Certificate:
     def __init__(self, jsoncert: dict) -> None:
@@ -342,15 +451,29 @@ class Certificate:
             self.unknown_certificate = jsoncert
             self.certificate = self.unknown_certificate
 
-    def __str__(self) -> str:
-        return str(
-            {
+    def to_dict(self) -> dict:
+        return {
                 "country_code": self.country_code,
-                "owner": self.owner,
+                "owner": self.owner.to_dict(),
                 "version": self.version,
                 "certificate_type": self.certificate_type,
-                "vaccination_certificate": self.vaccination_certificate,
-                "recovery_certificate": self.recovery_certificate,
-                "test_certificate": self.test_certificate,
+                "vaccination_certificate": stringify(self.vaccination_certificate),
+                "recovery_certificate": stringify(self.recovery_certificate),
+                "test_certificate": stringify(self.test_certificate),
+                "certificate": stringify(self.certificate)
             }
+
+    def __str__(self) -> str:
+        return json.dumps(
+            {
+                "country_code": self.country_code,
+                "owner": self.owner.to_dict(),
+                "version": self.version,
+                "certificate_type": self.certificate_type,
+                "vaccination_certificate": stringify(self.vaccination_certificate),
+                "recovery_certificate": stringify(self.recovery_certificate),
+                "test_certificate": stringify(self.test_certificate),
+                "certificate": stringify(self.certificate)
+            }, 
+            indent=4
         )

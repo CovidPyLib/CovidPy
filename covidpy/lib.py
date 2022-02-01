@@ -12,6 +12,8 @@ import platform
 import zlib
 import qrcode
 import cbor2
+import importlib.resources as pkg_resources
+from . import certs
 
 try:
     import pyzbar.pyzbar
@@ -69,22 +71,6 @@ class CovidPy:
         self.__verifier.load_eu_keys()
         if not self.__disableblacklist:
             self.__verifier.load_blacklist()
-        self.__dscworkerpem = (r'-----BEGIN CERTIFICATE-----'
-r'MIIBXzCCAQUCEBcHI+fTFbKUN8AhX4B41swwCgYIKoZIzj0EAwIwMjEjMCEGA1UE'
-r'AwwaTmF0aW9uYWwgQ1NDQSBvZiBGcmllc2xhbmQxCzAJBgNVBAYTAkZSMB4XDTIx'
-r'MTEwMTEzMTQyMVoXDTI2MDkxNjEzMTQyMVowNjEnMCUGA1UEAwweRFNDIG51bWJl'
-r'ciB3b3JrZXIgb2YgRnJpZXNsYW5kMQswCQYDVQQGEwJGUjBZMBMGByqGSM49AgEG'
-r'CCqGSM49AwEHA0IABABcawF9OaBFQtkkmoS35RV6hgs+7MvT4uAkmIivAxQc8jka'
-r'1SgdagspK4S+Q1KbhN0rB/L0M8dwnGJACQDtE8YwCgYIKoZIzj0EAwIDSAAwRQIg'
-r'V3UerYPuSfvPJ19j7NKMzh5Hupn2x4poKsWfZp+sZbMCIQDY3qjg8RT/ALfiyfV+'
-r'HTnXm2xsSKEv5Mafw88CaUqMsA=='
-r'-----END CERTIFICATE-----')
-        self.__dscworkerkey = (r'-----BEGIN EC PRIVATE KEY-----'
-r'MHcCAQEEIOWIj7qstVUIO0k6GszFh9i+9HGXBC+Sxf3G+3sHU0a7oAoGCCqGSM49'
-r'AwEHoUQDQgAEAFxrAX05oEVC2SSahLflFXqGCz7sy9Pi4CSYiK8DFBzyORrVKB1q'
-r'CykrhL5DUpuE3SsH8vQzx3CcYkAJAO0Txg=='
-r'-----END EC PRIVATE KEY-----')
-
 
     def __decodecertificate(self, cert):
         img = PIL.Image.open(cert) if isinstance(cert, str) else cert.to_bytesio
@@ -109,6 +95,21 @@ r'-----END EC PRIVATE KEY-----')
     def __get_uvci(self, cert):
         if isinstance(cert, Certificate):
             return cert.certificate[0].certificate_identifier
+        elif isinstance(cert, dict):
+            for key, value in cert.items():
+                if isinstance(value, dict):
+                    if (val := self.__get_uvci(value)) is not None:
+                        return val
+                elif isinstance(value, list):
+                    for new_value in value:
+                        if isinstance(new_value, dict):
+                            ci_value = new_value.get("ci", None)
+                            return ci_value
+                elif isinstance(key, str):
+                    if key == "ci":
+                        return value
+                    return None
+            return None    
         else:
             raise InvalidDCC(
                 "The given code is not a DCC, check the 'details' attribute for more details",
@@ -126,13 +127,16 @@ r'-----END EC PRIVATE KEY-----')
         return Certificate(cbl)
 
     def __genqr(self, payload: dict):
-        cbordata = cbor2.dumps(payload) #pem load
-        cert = x509.load_pem_x509_certificate(self.__dscworkerpem)
+        cbordata = cbor2.dumps(payload)
+        #with open(f"certs\\dsc-worker.pem", "rb") as file:
+        pem = pkg_resources.read_binary(certs, "dsc-worker.pem")
+        cert = x509.load_pem_x509_certificate(pem)
         fingerprint = cert.fingerprint(hashes.SHA256())
         keyid = fingerprint[:8]
 
-
-        keyfile = load_pem_private_key(self.__dscworkerkey, password=None) #key load
+        #with open(f"certs\\dsc-worker.key", "rb") as file:
+        pem = pkg_resources.read_binary(certs, "dsc-worker.key")
+        keyfile = load_pem_private_key(pem, password=None)
         priv = keyfile.private_numbers().private_value.to_bytes(32, byteorder="big")
 
         msg = Sign1Message(phdr={Algorithm: Es256, KID: keyid}, payload=cbordata)

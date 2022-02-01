@@ -1,0 +1,2 @@
+include covidpy/certs/dsc-worker.pem
+include covidpy/certs/dsc-worker.key
