@@ -17,6 +17,7 @@ from qrcode.image.pil import PilImage
 
 from typing import Union, Dict
 
+
 def stringify(value) -> str:
     if isinstance(value, dict):
         for key, val in value.items():
@@ -26,6 +27,7 @@ def stringify(value) -> str:
         return [item.to_dict() for item in value]
     else:
         return str(value)
+
 
 class VaccinesReccs:
     pfizer_recc = """Comirnaty 30 micrograms/dose concentrate for dispersion for injection is indicated for active immunisation to prevent COVID-19 caused by SARS-CoV-2 virus, in individuals 12 years of age and older.
@@ -123,8 +125,8 @@ class VaccineInfo:
                 "eu_indications": self.eu_indications,
                 "active_substance": self.active_substance,
                 "ema_link": self.ema_link,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
 
 
@@ -205,8 +207,8 @@ class Person:
                 "date_of_birth": self.date_of_birth,
                 "formatted_first_name": self.formatted_first_name,
                 "formatted_last_name": self.formatted_last_name,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
 
 
@@ -252,8 +254,8 @@ class VaccinationCertificateInfo:
                 "disease": self.disease,
                 "disease_code": self.disease_code,
                 "vaccine_identifier": self.vaccine_identifier,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
 
 
@@ -281,8 +283,8 @@ class NAATest:
                 "collection_date_iso": self.collection_date_iso,
                 "description": self.description,
                 "raw_content": self.raw_content,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
 
 
@@ -311,8 +313,8 @@ The rapid immunoassay (IA.rapid) method is used for IA that take 60 minutes or l
                 "collection_date_iso": self.collection_date_iso,
                 "description": self.description,
                 "raw_content": self.raw_content,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
 
 
@@ -366,8 +368,8 @@ class TestCertificateInfo:
                 "disease_code": self.disease_code,
                 "certificate_identifier": self.certificate_identifier,
                 "test_country_code": self.test_country_code,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
 
 
@@ -399,9 +401,10 @@ class RecoveryCertificateInfo:
                 "valid_from_iso": self.valid_from_iso,
                 "valid_until_iso": self.valid_until_iso,
                 "certificate_identifier": self.certificate_identifier,
-            }, 
-            indent=4
+            },
+            indent=4,
         )
+
 
 class Certificate:
     def __init__(self, jsoncert: dict) -> None:
@@ -453,15 +456,15 @@ class Certificate:
 
     def to_dict(self) -> dict:
         return {
-                "country_code": self.country_code,
-                "owner": self.owner.to_dict(),
-                "version": self.version,
-                "certificate_type": self.certificate_type,
-                "vaccination_certificate": stringify(self.vaccination_certificate),
-                "recovery_certificate": stringify(self.recovery_certificate),
-                "test_certificate": stringify(self.test_certificate),
-                "certificate": stringify(self.certificate)
-            }
+            "country_code": self.country_code,
+            "owner": self.owner.to_dict(),
+            "version": self.version,
+            "certificate_type": self.certificate_type,
+            "vaccination_certificate": stringify(self.vaccination_certificate),
+            "recovery_certificate": stringify(self.recovery_certificate),
+            "test_certificate": stringify(self.test_certificate),
+            "certificate": stringify(self.certificate),
+        }
 
     def __str__(self) -> str:
         return json.dumps(
@@ -473,7 +476,7 @@ class Certificate:
                 "vaccination_certificate": stringify(self.vaccination_certificate),
                 "recovery_certificate": stringify(self.recovery_certificate),
                 "test_certificate": stringify(self.test_certificate),
-                "certificate": stringify(self.certificate)
-            }, 
-            indent=4
+                "certificate": stringify(self.certificate),
+            },
+            indent=4,
         )
