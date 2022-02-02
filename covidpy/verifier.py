@@ -33,11 +33,11 @@ class DCCVerifier:
         self.sched = None
         self.blacklist: list = []
         if not self.disblrefresh and not self.diskidsrefresh:
-            self.sched = schedule.every().day.at("08:00").do(self.reload_all)
+            self.sched = schedule.every().day.at("00:00").do(self.reload_all)
         elif self.disblrefresh and not self.diskidsrefresh:
-            self.sched = schedule.every().day.at("08:00").do(self.reload_kids)
+            self.sched = schedule.every().day.at("00:00").do(self.reload_kids)
         elif self.diskidsrefresh and not self.disblrefresh:
-            self.sched = schedule.every().day.at("08:00").do(self.reload_bl)
+            self.sched = schedule.every().day.at("00:00").do(self.reload_bl)
 
     def reload_all(self):
         self.reload_kids()
