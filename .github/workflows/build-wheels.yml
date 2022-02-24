@@ -9,6 +9,7 @@ jobs:
   build_wheels_and_upload:
     name: Build wheels and upload
     runs-on: ubuntu-20.04
+    environment: pypi
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
