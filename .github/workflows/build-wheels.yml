@@ -22,8 +22,5 @@ jobs:
         with:
           path: ./dist/*
       - name: Upload
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PSW }}
         run: |
-          python -m twine upload dist/*
+          python -m twine upload -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PSW }} dist/*
