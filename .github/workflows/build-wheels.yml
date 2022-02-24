@@ -22,8 +22,8 @@ jobs:
         with:
           path: ./wheels/CovidPy-*.whl
       - name: Upload
-          env:
-            TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-            TWINE_PASSWORD: ${{ secrets.PYPI_PSW }}
-          run: |
-            python -m twine upload wheels/CovidPy-*.whl
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PSW }}
+        run: |
+          python -m twine upload wheels/CovidPy-*.whl
