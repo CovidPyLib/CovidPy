@@ -25,7 +25,7 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheels
         env:
-          CIBW_BUILD: cp36-*
+          CIBW_SKIP: cp36-*
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheels/*.whl
