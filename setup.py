@@ -19,7 +19,7 @@ requirements = [
     "requests",
     "qrcode",
     "pyzbar",
-    "cryptography>=3.4.2",  # security bug + compatibility
+    "cryptography>=3.4.2",  # security bug + compatibility 
     "cose",
     "cbor2",
     "base45>=0.4.3",
