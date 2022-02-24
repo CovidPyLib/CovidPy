@@ -6,41 +6,24 @@ on:
       - 'setup.py'
 
 jobs:
-  build_wheels:
-    name: Build wheels
+  build_wheels_and_upload:
+    name: Build wheels and upload
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-
+        with:
+          python-version: 3.9
+      - name: Install setuptools and twine
+        run: python -m pip install setuptools twine
       - name: Build wheels
         run: pip wheel -w wheels .
       - uses: actions/upload-artifact@v2
         with:
-          path: ./wheels/*.whl
-
-  pypi_upload:
-      runs-on: windows-2019
-      needs: [build_wheels]
-      steps:
-        - name: Python install
-          uses: actions/setup-python@v2
-          with:
-            python-version: 3.9
-        - name: Install twine
-          run: |
-            python -m pip install twine
-        - name: Download built wheels
-          uses: actions/download-artifact@v2
-          with:
-            path: dls/
-        - name: Move artifacts to wheels dir
-          run: |
-            mkdir wheels
-            Get-ChildItem -Path .\dls -Recurse -File | Move-Item -Destination .\wheels
-        - name: Upload
+          path: ./wheels/CovidPy-*.whl
+      - name: Upload
           env:
             TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
             TWINE_PASSWORD: ${{ secrets.PYPI_PSW }}
           run: |
-            python -m twine upload dist/*
+            python -m twine upload wheels/CovidPy-*.whl
