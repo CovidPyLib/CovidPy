@@ -1,6 +1,7 @@
 # dev
 main.py
 tests/
+pipwheel/
 # PyCharm stuff
 .idea/
 
