@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    paths:
+      - 'setup.py'
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macOS-10.15]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Used to host cibuildwheel
+      - uses: actions/setup-python@v2
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.3.1
+
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir wheels
+        env:
+          CIBW_BUILD: cp36-*
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./wheels/*.whl
+
+  pypi_upload:
+      runs-on: windows-2019
+      needs: [build_wheels]
+      steps:
+        - name: Python install
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.9
+        - name: Install twine
+          run: |
+            python -m pip install twine
+        - name: Download built wheels
+          uses: actions/download-artifact@v2
+          with:
+            path: dls/
+        - name: Move artifacts to wheels dir
+          run: |
+            mkdir wheels
+            Get-ChildItem -Path .\dls -Recurse -File | Move-Item -Destination .\wheels
+        - name: Upload
+          env:
+            TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+            TWINE_PASSWORD: ${{ secrets.PYPI_PSW }}
+          run: |
+            python -m twine upload dist/*

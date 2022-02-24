@@ -5,9 +5,9 @@
 CovidPy is a python library to work with DCCs (Digital Covid Certificates).
 Using this library you can:
 
-1) Decode the content of a DCC and get the raw json
-2) Encode a VALID json and create a recognizable DCC (it will only work with a json containing a valid DCC's info)
-3) Verify a DCC it will verify the validity of a DCC also checking if it's not revoked
+- Decode the content of a DCC and get the raw json
+- Encode a VALID json and create a recognizable DCC (it will only work with a json containing a valid DCC's info and will still be marked as invalid since it's not signed with a valid european private key)
+- Verify a DCC it will verify the validity of a DCC also checking if it's not revoked
 
 Please remember that this library is in it's early stages and it's not complete, there could be some bugs or missing features, if you find any, please report in an issue
 if you have any question you can open an issue or ask me on [telegram](https://t.me/cagavo)

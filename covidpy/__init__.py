@@ -1,5 +1,5 @@
 # Copyright (c) 2022, CovidPyLib
-# This file is part of CovidPy v0.1.3
+# This file is part of CovidPy v0.1.4
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of

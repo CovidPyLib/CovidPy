@@ -114,3 +114,4 @@ venv.bak/
 .mypy_cache/
 pypiupload.py
 .pypirc
+updatenotice.py

@@ -1,5 +1,5 @@
 # Copyright (c) 2022, CovidPyLib
-# This file is part of CovidPy v0.1.3
+# This file is part of CovidPy v0.1.4
 #
 # The project has been distributed in the hope it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -52,10 +52,11 @@ from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 import PIL
+import logging
 
 from .verifier import DCCVerifier
 from .types import QRCode, VerifyResult, Certificate
-from .errors import InvalidDCC
+from .errors import InvalidDCC, ImageFormatError
 
 
 class CovidPy:
@@ -64,20 +65,27 @@ class CovidPy:
         disable_keys_update: bool = False,
         disable_blacklist_update: bool = False,
         disable_blacklist: bool = False,
+        blocked_formats: list = ["EPS"] #CVE-2018-16509
     ) -> None:
         self.__autoblacklist = disable_blacklist_update
         self.__autokids = disable_keys_update
         self.__disableblacklist = disable_blacklist
         self.__verifier = DCCVerifier(self.__autoblacklist, self.__autokids)
         self.__verifier.load_eu_keys()
+        self.__blocked_formats = blocked_formats
+        if "EPS" not in self.__blocked_formats:
+            logging.warning("EPS image format should be blocked for secuirity reasons (EPSF), please make sure you know what you are doing")
         if not self.__disableblacklist:
             self.__verifier.load_blacklist()
-
     def __decodecertificate(self, cert):
-        if isinstance(cert, str):
-            img = PIL.Image.open(cert)
-        else:
+        if not isinstance(cert, str):
             raise TypeError("The given certificate is not a path")
+        img = PIL.Image.open(cert)
+        form = img.format
+        if form in self.__blocked_formats:
+            img.close()
+            raise ImageFormatError("The given image is in a blocked format, check the 'details' attribute for more details", f"{form}_BLOCKED")
+        print(form)
         data = pyzbar.pyzbar.decode(img)
         try:
             cert = data[0].data.decode()
@@ -109,9 +117,7 @@ class CovidPy:
                         if isinstance(new_value, dict):
                             return new_value.get("ci", None)
                 elif isinstance(key, str):
-                    if key == "ci":
-                        return value
-                    return None
+                    return value if key == "ci" else None
             return None
         else:
             raise InvalidDCC(
@@ -173,7 +179,7 @@ class CovidPy:
             return VerifyResult(
                 self.__verifier.is_valid(self.__decodecertificate(cert)), None
             )
-        if revoked and not self.__disableblacklist:
+        if revoked:
             return VerifyResult(False, True)
 
         return VerifyResult(
