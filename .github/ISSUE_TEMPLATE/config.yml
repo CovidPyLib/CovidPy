@@ -1,0 +1,7 @@
+contact_links:
+  - name: Public support
+    url: https://t.me/CovidPyChat
+    about: Please ask and answer questions here.
+  - name: Private support
+    url: https://t.me/cagavo
+    about: Please report security vulnerabilities and other sensible things here.
