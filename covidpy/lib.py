@@ -91,7 +91,6 @@ class CovidPy:
                 "The given image is in a blocked format, check the 'details' attribute for more details",
                 f"{form}_BLOCKED",
             )
-        print(form)
         data = pyzbar.pyzbar.decode(img)
         try:
             cert = data[0].data.decode()
