@@ -1,3 +1,7 @@
+## Deprecated :(
+I won't update this anymore.
+as today (3/6/2022) it's still working, i don't guarantee any support.
+
 # CovidPy BETA 🦠
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/340c661b7668410b977e42a2c351cffa)](https://app.codacy.com/gh/CovidPyLib/CovidPy?utm_source=github.com&utm_medium=referral&utm_content=CovidPyLib/CovidPy&utm_campaign=Badge_Grade_Settings)
