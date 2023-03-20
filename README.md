@@ -1,6 +1,7 @@
-## Deprecated :(
-I won't update this anymore.
-as today (3/6/2022) it's still working, i don't guarantee any support.
+## Archived
+This project will not receive any support, the pandemy has ended and i don't have time to update it anymore.
+It should still work.
+Click [here](https://github.com/doggyhaha/doggyhaha) to see what i'm currently working on!
 
 # CovidPy BETA 🦠
 
